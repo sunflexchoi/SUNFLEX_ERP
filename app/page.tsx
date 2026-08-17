@@ -6,7 +6,10 @@ import { Search, Package, Image as ImageIcon, MapPin, Info } from 'lucide-react'
 import { createClient } from '@supabase/supabase-js';
 
 // 1. Supabase 연결 (대표님의 정보를 여기에 넣게 됩니다)
-const supabase = createClient('PROJECT_URL', 'ANON_KEY');
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 export default function StaffApp() {
   const [items, setItems] = useState([]);
