@@ -1,3 +1,5 @@
+"use client";
+
 // src/features/inventory/StaffApp.tsx
 import React, { useState, useEffect } from 'react';
 import { Search, Package, Image as ImageIcon, MapPin, Info } from 'lucide-react';
