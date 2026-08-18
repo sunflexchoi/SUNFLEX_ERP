@@ -61,7 +61,7 @@ export default function SunflexFinalERP() {
   return (
     <div className="flex h-screen bg-zinc-50 font-sans text-zinc-900 overflow-hidden">
       
-      {/* [1] 좌측 통합 사이드바: 장바구니가 이 안으로 들어왔습니다 */}
+      {/* [1] 좌측 통합 사이드바 */}
       <aside className={`
         fixed inset-y-0 left-0 z-50 bg-white border-r border-zinc-200 transition-all duration-300 flex flex-col shadow-2xl
         md:relative md:translate-x-0 ${isSidebarExpanded ? 'w-80' : 'w-20 -translate-x-full md:translate-x-0'}
@@ -74,42 +74,55 @@ export default function SunflexFinalERP() {
         <nav className="flex-1 p-3 space-y-2 overflow-y-auto custom-scrollbar">
           {menus.filter(m => !m.parent_id).map(main => (
             <div key={main.id} className="space-y-1">
-              <button onClick={() => main.path && setActiveMenu(main.path)} className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all ${activeMenu.startsWith(main.path?.split('_')[0]) ? 'bg-zinc-900 text-white shadow-xl' : 'text-zinc-500 hover:bg-zinc-100'}`}>
+              {/* 대메뉴 클릭 시 'inventory_root'인 경우 'inventory_list'로 자동 연결 */}
+              <button 
+                onClick={() => {
+                  if (main.path === 'inventory_root') setActiveMenu('inventory_list');
+                  else if (main.path) setActiveMenu(main.path);
+                }} 
+                className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all ${activeMenu.startsWith(main.path?.split('_')[0]) || (main.path === 'inventory_root' && activeMenu.startsWith('inventory')) ? 'bg-zinc-900 text-white shadow-xl scale-[1.02]' : 'text-zinc-500 hover:bg-zinc-100'}`}
+              >
                 <DynamicIcon name={main.icon_name} /> {isSidebarExpanded && <span className="text-sm font-bold flex-1 text-left">{main.title}</span>}
               </button>
               
-              {/* [통합 장바구니 영역] 재고 트랜잭션 메뉴가 활성화되었을 때만 노출 */}
-              {activeMenu === 'inventory_tx' && main.id === 1 && isSidebarExpanded && (
-                <div className="mx-1 my-3 p-4 bg-zinc-50 rounded-[2rem] border border-zinc-200 space-y-4 animate-in slide-in-from-top duration-300">
-                  <div className="space-y-2">
-                    <p className="text-[10px] font-black text-zinc-400 ml-1">TRANSACTION SETTINGS</p>
-                    <select className="w-full bg-white border-zinc-200 rounded-xl text-xs font-bold py-2.5 shadow-sm" value={txType} onChange={(e)=>setTxType(e.target.value)}>
-                      <option value="SALE">판매 (-)</option><option value="TRANSFER">이동 (⇄)</option><option value="DAMAGE">파손 (-)</option>
-                    </select>
-                    <div className="grid grid-cols-2 gap-2">
-                      <select className="bg-white border-zinc-200 rounded-xl text-[10px] py-2" onChange={(e)=>setSourceStore(e.target.value)}><option>출발...</option>{stores.map(s=><option key={s.id} value={s.store_name}>{s.store_name}</option>)}</select>
-                      <select className="bg-white border-zinc-200 rounded-xl text-[10px] py-2" onChange={(e)=>setDestStore(e.target.value)}><option>도착...</option>{stores.map(s=><option key={s.id} value={s.store_name}>{s.store_name}</option>)}</select>
-                    </div>
-                  </div>
-                  <div className="max-h-40 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
-                    {cart.map(c => (
-                      <div key={c.product_no} className="flex items-center gap-2 bg-white p-2 rounded-xl shadow-sm border border-zinc-100 relative group">
-                        <img src={c.main_image_url} className="w-8 h-8 object-contain" />
-                        <div className="flex-1 min-w-0"><p className="text-[10px] font-bold truncate leading-none">{c.item_name_kr}</p></div>
-                        <input type="number" value={c.qty} className="w-9 bg-zinc-50 text-[10px] text-center rounded-lg font-bold p-1" onChange={(e)=>setCart(cart.map(i=>i.product_no===c.product_no?{...i, qty:Number(e.target.value)}:i))}/>
-                        <button onClick={()=>setCart(cart.filter(i=>i.product_no!==c.product_no))} className="text-zinc-300 hover:text-red-500"><LucideIcons.X size={12}/></button>
-                      </div>
-                    ))}
-                    {cart.length === 0 && <p className="text-[10px] text-zinc-400 text-center py-4 italic">대기 목록이 없습니다</p>}
-                  </div>
-                  <button onClick={handleTransaction} className="w-full bg-zinc-900 text-white py-3.5 rounded-2xl text-xs font-black shadow-xl active:scale-95 transition-all">일괄 승인 및 기록</button>
-                </div>
-              )}
-
+              {/* 하위 메뉴 렌더링 루프 */}
               {isSidebarExpanded && menus.filter(s => s.parent_id === main.id).map(sub => (
-                <button key={sub.id} onClick={() => setActiveMenu(sub.path)} className={`w-full flex items-center gap-3 pl-12 pr-4 py-2.5 rounded-xl text-xs font-semibold ${activeMenu === sub.path ? 'bg-zinc-100 text-zinc-900 shadow-inner' : 'text-zinc-400 hover:text-zinc-600'}`}>
-                  <DynamicIcon name={sub.icon_name} size={14} /> {sub.title}
-                </button>
+                <React.Fragment key={sub.id}>
+                  <button 
+                    onClick={() => setActiveMenu(sub.path)} 
+                    className={`w-full flex items-center gap-3 pl-12 pr-4 py-2.5 rounded-xl text-xs font-semibold ${activeMenu === sub.path ? 'bg-zinc-100 text-zinc-900 shadow-inner' : 'text-zinc-400 hover:text-zinc-600'}`}
+                  >
+                    <DynamicIcon name={sub.icon_name} size={14} /> {sub.title}
+                  </button>
+
+                  {/* [지시사항 반영] 장바구니 위치: '재고 트랜잭션' 버튼 바로 아래에 삽입 */}
+                  {sub.path === 'inventory_tx' && activeMenu === 'inventory_tx' && (
+                    <div className="mx-2 my-3 p-4 bg-zinc-50 rounded-[2rem] border border-zinc-200 space-y-4 animate-in slide-in-from-top duration-300">
+                      <div className="space-y-2">
+                        <p className="text-[10px] font-black text-zinc-400 ml-1 uppercase">Transaction Set</p>
+                        <select className="w-full bg-white border-zinc-200 rounded-xl text-xs font-bold py-2.5 shadow-sm" value={txType} onChange={(e)=>setTxType(e.target.value)}>
+                          <option value="SALE">판매 (-)</option><option value="TRANSFER">이동 (⇄)</option><option value="DAMAGE">파손 (-)</option>
+                        </select>
+                        <div className="grid grid-cols-2 gap-2">
+                          <select className="bg-white border-zinc-200 rounded-xl text-[10px] py-2" onChange={(e)=>setSourceStore(e.target.value)}><option>출발...</option>{stores.map(s=><option key={s.id} value={s.store_name}>{s.store_name}</option>)}</select>
+                          <select className="bg-white border-zinc-200 rounded-xl text-[10px] py-2" onChange={(e)=>setDestStore(e.target.value)}><option>도착...</option>{stores.map(s=><option key={s.id} value={s.store_name}>{s.store_name}</option>)}</select>
+                        </div>
+                      </div>
+                      <div className="max-h-40 overflow-y-auto space-y-2 custom-scrollbar">
+                        {cart.map(c => (
+                          <div key={c.product_no} className="flex items-center gap-2 bg-white p-2.5 rounded-xl shadow-sm border border-zinc-100 relative group">
+                            <img src={c.main_image_url} className="w-8 h-8 object-contain bg-zinc-50 rounded-lg" />
+                            <div className="flex-1 min-w-0"><p className="text-[10px] font-bold truncate leading-none">{c.item_name_kr}</p></div>
+                            <input type="number" value={c.qty} className="w-9 bg-zinc-100 text-[10px] text-center rounded-lg font-bold p-1" onChange={(e)=>setCart(cart.map(i=>i.product_no===c.product_no?{...i, qty:Number(e.target.value)}:i))}/>
+                            <button onClick={()=>setCart(cart.filter(i=>i.product_no!==c.product_no))} className="text-zinc-300 hover:text-red-500"><LucideIcons.X size={12}/></button>
+                          </div>
+                        ))}
+                        {cart.length === 0 && <p className="text-[10px] text-zinc-400 text-center py-4 italic">대기 목록이 없습니다</p>}
+                      </div>
+                      <button onClick={handleTransaction} className="w-full bg-zinc-900 text-white py-3.5 rounded-2xl text-xs font-black shadow-xl active:scale-95 transition-all">일괄 승인 및 기록</button>
+                    </div>
+                  )}
+                </React.Fragment>
               ))}
             </div>
           ))}
@@ -123,7 +136,7 @@ export default function SunflexFinalERP() {
         </div>
       </aside>
 
-      {/* [2] 메인 영역: 우측에는 아무 패널도 없습니다 */}
+      {/* [2] 메인 영역 */}
       <main className="flex-1 flex flex-col min-w-0 h-full relative">
         <header className="h-20 bg-white/90 backdrop-blur-md border-b border-zinc-200 px-4 md:px-8 flex justify-between items-center sticky top-0 z-20">
           <div className="flex items-center gap-3 flex-1">
@@ -151,12 +164,10 @@ export default function SunflexFinalERP() {
                 className={`bg-white rounded-[1.5rem] border border-zinc-200 shadow-sm p-3 md:p-5 cursor-pointer hover:shadow-xl transition-all 
                 ${viewMode === 'list' ? 'flex items-center gap-4' : 'flex flex-col items-center'}`}>
                 
-                {/* 이미지 영역: 핸드폰에서도 회색 배경 대신 이미지가 꽉 차게 조절 */}
                 <div className={`${viewMode === 'list' ? 'w-14 h-14 flex-shrink-0' : 'w-full aspect-square'} bg-zinc-50 rounded-2xl flex items-center justify-center p-2 mb-2 overflow-hidden`}>
                   <img src={item.main_image_url} className="max-h-full max-w-full object-contain mix-blend-multiply" alt="" />
                 </div>
 
-                {/* 텍스트 영역: 모바일 가독성 최우선 */}
                 <div className={`flex-1 min-w-0 ${viewMode === 'list' ? 'text-left' : 'text-center w-full mt-1'}`}>
                   <h3 className="font-bold text-[10px] md:text-sm truncate text-zinc-800 leading-none">{item.item_name_kr}</h3>
                   <p className="text-[8px] md:text-[10px] text-zinc-400 font-mono mt-1">{item.product_no}</p>
@@ -172,12 +183,12 @@ export default function SunflexFinalERP() {
         </section>
       </main>
 
-      {/* [상세 모달] 기존 로직 그대로 유지 */}
+      {/* [상세 모달] */}
       {selectedItem && (
         <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-md flex justify-end">
            <div className="w-full md:max-w-2xl bg-white h-full p-6 md:p-12 overflow-y-auto animate-in slide-in-from-right duration-500 shadow-2xl relative">
               <button onClick={()=>setSelectedItem(null)} className="absolute top-6 left-6 p-3 bg-zinc-100 rounded-full active:scale-90 transition-transform z-10"><LucideIcons.X size={24}/></button>
-              <div className="space-y-8 mt-10">
+              <div className="space-y-8 mt-10 pb-20">
                  <div className="aspect-square bg-zinc-50 rounded-[2rem] md:rounded-[4rem] flex items-center justify-center p-8 border border-zinc-100">
                     <img src={selectedItem.main_image_url} className="max-h-full max-w-full object-contain mix-blend-multiply" />
                  </div>
@@ -186,7 +197,7 @@ export default function SunflexFinalERP() {
                     <h2 className="text-3xl md:text-5xl font-light italic serif leading-tight text-zinc-900">{selectedItem.item_name_en}</h2>
                     <h3 className="text-lg md:text-2xl font-bold text-zinc-600">{selectedItem.item_name_kr}</h3>
                  </div>
-                 <div className="grid grid-cols-2 gap-y-10 border-t border-zinc-100 pt-10 pb-20">
+                 <div className="grid grid-cols-2 gap-y-10 border-t border-zinc-100 pt-10">
                     <div className="space-y-1 px-2"><p className="text-[10px] text-zinc-300 font-black uppercase">Artist</p><p className="text-sm md:text-lg font-medium">{selectedItem.artist_name}</p></div>
                     <div className="space-y-1 px-2"><p className="text-[10px] text-zinc-300 font-black uppercase">Price</p><p className="text-sm md:text-lg font-black italic">₩{selectedItem.retail_price?.toLocaleString()}</p></div>
                     
@@ -199,7 +210,6 @@ export default function SunflexFinalERP() {
                           </div>
                        </div>
                     )}
-                    
                     <div className="col-span-2 space-y-4 px-2">
                        <p className="text-[10px] text-zinc-300 font-black uppercase tracking-widest">Store Stock Status</p>
                        <div className="grid grid-cols-3 gap-3">
@@ -217,7 +227,6 @@ export default function SunflexFinalERP() {
         </div>
       )}
 
-      {/* 스타일 보강 */}
       <style jsx global>{`
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #e4e4e7; border-radius: 10px; }
