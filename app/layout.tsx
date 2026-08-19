@@ -5,7 +5,7 @@ import ClientLayout from "./ClientLayout";
 
 export const metadata: Metadata = {
   title: "SUNFLEX ERP",
-  description: "Luxury Crystal Inventory System",
+  description: "Luxury Crystal Inventory Management",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
