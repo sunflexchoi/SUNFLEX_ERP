@@ -1,4 +1,4 @@
-export const ViewSmall = ({ data }: { data: any[] }) => (
+export const ViewSmall = ({ data, isCEO }: { data: any[], isCEO: boolean }) => (
   <div className="overflow-x-auto bg-white rounded-lg border border-slate-200">
     <table className="w-full text-sm text-left border-collapse">
       <thead className="bg-slate-50 text-slate-500 font-bold border-b">
