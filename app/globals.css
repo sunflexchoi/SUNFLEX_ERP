@@ -1,13 +1,21 @@
+/* Geist 폰트 직접 불러오기 (CDN 방식) */
+@import url('https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist-sans/style.css');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-rgb: 255, 255, 255;
+  /* 전체 기본 폰트를 Geist Sans로 지정 */
+  --font-geist-sans: 'Geist Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: rgb(var(--background-rgb));
+  font-family: var(--font-geist-sans);
+  @apply antialiased text-slate-900 bg-[#f8fafc];
+}
+
+/* 숫자 가독성을 위한 최적화 */
+.font-mono {
+  font-feature-settings: "tnum" on, "lnum" on;
 }
