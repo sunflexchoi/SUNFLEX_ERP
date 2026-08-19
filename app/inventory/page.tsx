@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-// 우리가 미리 만들어둔 부품들을 불러옵니다.
+// 1. 부품(View)들을 가져옵니다.
 import { ViewLarge } from "@/components/inventory/ViewLarge";
 import { ViewMedium } from "@/components/inventory/ViewMedium";
 import { ViewSmall } from "@/components/inventory/ViewSmall";
@@ -9,10 +9,10 @@ import { Button } from "@/components/ui/button";
 import { LayoutGrid, List, AlignJustify } from "lucide-react"; 
 
 export default function InventoryPage() {
-  // 1. 현재 어떤 뷰인지 저장 (기본값: '중')
+  // 2. 현재 어떤 뷰인지 저장하는 상태 (기본값: 'medium')
   const [viewMode, setViewMode] = useState<"large" | "medium" | "small">("medium");
 
-  // 2. 테스트용 데이터
+  // 3. 테스트용 데이터 (나중에 실제 DB 데이터로 바뀝니다)
   const dummyData = [
     {
       id: 1,
@@ -34,37 +34,49 @@ export default function InventoryPage() {
     }
   ];
 
-  const viewConfig = {
-    visible_fields: ["serial_no", "name_ko", "collection_en", "stock_qty", "price"]
-  };
-
   return (
-    <div className="container mx-auto p-4 md:p-8 space-y-6 bg-slate-50 min-h-screen">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div className="container mx-auto p-4 md:p-8 space-y-6 bg-slate-50 min-h-screen font-sans">
+      {/* 헤더 섹션 */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-6">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">재고 마스터</h1>
-          <p className="text-slate-500 text-sm">제품번호 기반 실시간 현황</p>
+          <h1 className="text-3xl font-black tracking-tight text-slate-900">재고 마스터</h1>
+          <p className="text-slate-500">SUNFLEX Luxury Crystal ERP</p>
         </div>
         
-        {/* 대/중/소 전환 버튼 */}
-        <div className="flex bg-white border border-slate-200 rounded-xl p-1 shadow-sm shrink-0">
-          <Button variant={viewMode === "large" ? "default" : "ghost"} size="sm" onClick={() => setViewMode("large")}>
+        {/* 버튼 섹션: 여기서 viewMode를 변경합니다 */}
+        <div className="flex bg-white border border-slate-200 rounded-xl p-1 shadow-sm">
+          <Button 
+            variant={viewMode === "large" ? "default" : "ghost"} 
+            size="sm" 
+            onClick={() => setViewMode("large")}
+            className="rounded-lg"
+          >
             <LayoutGrid className="w-4 h-4 mr-2" /> 대
           </Button>
-          <Button variant={viewMode === "medium" ? "default" : "ghost"} size="sm" onClick={() => setViewMode("medium")}>
+          <Button 
+            variant={viewMode === "medium" ? "default" : "ghost"} 
+            size="sm" 
+            onClick={() => setViewMode("medium")}
+            className="rounded-lg"
+          >
             <List className="w-4 h-4 mr-2" /> 중
           </Button>
-          <Button variant={viewMode === "small" ? "default" : "ghost"} size="sm" onClick={() => setViewMode("small")}>
+          <Button 
+            variant={viewMode === "small" ? "default" : "ghost"} 
+            size="sm" 
+            onClick={() => setViewMode("small")}
+            className="rounded-lg"
+          >
             <AlignJustify className="w-4 h-4 mr-2" /> 소
           </Button>
         </div>
       </div>
 
-      {/* 실제 뷰 렌더링 영역 */}
-      <div className="mt-6">
-        {viewMode === "large" && <ViewLarge data={dummyData} config={viewConfig} />}
-        {viewMode === "medium" && <ViewMedium data={dummyData} config={viewConfig} />}
-        {viewMode === "small" && <ViewSmall data={dummyData} config={viewConfig} />}
+      {/* 핵심: 선택된 모드에 따라 다른 부품(View)을 보여줍니다 */}
+      <div className="mt-8 transition-all duration-300">
+        {viewMode === "large" && <ViewLarge data={dummyData} />}
+        {viewMode === "medium" && <ViewMedium data={dummyData} />}
+        {viewMode === "small" && <ViewSmall data={dummyData} />}
       </div>
     </div>
   );
