@@ -4,8 +4,8 @@ import { AppProvider } from "../context/AppContext";
 import ClientLayout from "./ClientLayout";
 
 export const metadata: Metadata = {
-  title: "SUNFLEX ERP | Luxury Crystal",
-  description: "Configuration-driven ERP system",
+  title: "SUNFLEX ERP",
+  description: "Luxury Crystal Inventory System",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
