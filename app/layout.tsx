@@ -3,7 +3,7 @@ import "./globals.css"; // 여기서 CDN으로 폰트를 불러옵니다.
 
 export const metadata: Metadata = {
   title: "SUNFLEX ERP",
-  description: "Luxury Crystal Inventory System",
+  description: "Inventory System",
 };
 
 export default function RootLayout({
