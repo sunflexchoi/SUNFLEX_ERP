@@ -1,11 +1,11 @@
 "use client";
-import { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState } from "react";
 
 const AppContext = createContext<any>(null);
 
-export function AppProvider({ children }: { children: ReactNode }) {
-  const [isCEO, setIsCEO] = useState(false); // CEO 모드 상태
-  const [isCollapsed, setIsCollapsed] = useState(false); // 사이드바 축소 상태
+export function AppProvider({ children }: { children: React.ReactNode }) {
+  const [isCEO, setIsCEO] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
     <AppContext.Provider value={{ isCEO, setIsCEO, isCollapsed, setIsCollapsed }}>
