@@ -5,14 +5,10 @@ import ClientLayout from "./ClientLayout";
 
 export const metadata: Metadata = {
   title: "SUNFLEX ERP",
-  description: "Luxury Crystal Inventory System",
+  description: "Luxury Crystal ERP",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
       <head>
