@@ -4,8 +4,8 @@ import { AppProvider } from "../context/AppContext";
 import ClientLayout from "./ClientLayout";
 
 export const metadata: Metadata = {
-  title: "SUNFLEX ERP",
-  description: "Luxury Crystal ERP",
+  title: "SUNFLEX ERP | Luxury Crystal",
+  description: "Configuration-driven ERP system",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -14,7 +14,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist-sans/style.css" />
       </head>
-      <body style={{ margin: 0 }}>
+      <body style={{ margin: 0, padding: 0 }}>
         <AppProvider>
           <ClientLayout>{children}</ClientLayout>
         </AppProvider>
