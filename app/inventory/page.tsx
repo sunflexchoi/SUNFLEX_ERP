@@ -15,20 +15,18 @@ export default function InventoryPage() {
     <div className="p-8 md:p-12 max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-8 border-b border-slate-200 pb-10">
         <div>
-          <span className="text-blue-600 font-black tracking-[0.4em] text-[10px] uppercase opacity-80">Sunflex Luxury Master</span>
-          <h1 className="text-5xl font-black tracking-tighter text-slate-900 mt-2 italic uppercase">Inventory</h1>
+          <span className="text-blue-600 font-black tracking-[0.4em] text-[10px] uppercase opacity-80 leading-none">Inventory Master</span>
+          <h1 className="text-5xl font-black tracking-tighter text-slate-900 mt-2 italic uppercase leading-none">Stock</h1>
           {isCEO && <p className="text-emerald-500 text-[10px] font-black uppercase tracking-[0.2em] mt-3 animate-pulse">● CEO Authorization Mode</p>}
         </div>
-
         <div className="flex bg-white/50 backdrop-blur-md border border-slate-200 p-1.5 rounded-2xl shadow-sm">
           {(["large", "medium", "small"] as const).map((mode) => (
-            <button key={mode} onClick={() => setViewMode(mode)} className={`px-8 py-2.5 rounded-xl text-[10px] font-black tracking-[0.2em] uppercase transition-all duration-300 ${viewMode === mode ? "bg-slate-900 text-white shadow-xl scale-105" : "text-slate-400 hover:text-slate-600"}`}>
+            <button key={mode} onClick={() => setViewMode(mode)} className={`px-8 py-2.5 rounded-xl text-[10px] font-black uppercase transition-all ${viewMode === mode ? "bg-slate-900 text-white shadow-xl scale-105" : "text-slate-400 hover:text-slate-600"}`}>
               {mode}
             </button>
           ))}
         </div>
       </div>
-
       <div className="transition-all duration-500">
         {viewMode === "large" && <ViewLarge data={dummyData} isCEO={isCEO} />}
         {viewMode === "medium" && <ViewMedium data={dummyData} isCEO={isCEO} />}
