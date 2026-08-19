@@ -1,4 +1,4 @@
-export const ViewMedium = ({ data }: { data: any[] }) => (
+export const ViewMedium = ({ data, isCEO }: { data: any[], isCEO: boolean }) => (
   <div className="flex flex-col gap-3">
     {data.map((item) => (
       <div key={item.id} className="flex items-center gap-4 bg-white p-3 rounded-xl border border-slate-200 hover:shadow-md transition-all">
